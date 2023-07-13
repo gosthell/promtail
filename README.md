@@ -1,6 +1,6 @@
 ![!Easy promail client](./logo.png)
 
-# Promtail Client ![Continious Integration (Lint & Unit Test)](https://github.com/ic2hrmk/promtail/workflows/Continious%20Integration%20(Lint%20&%20Unit%20Test)/badge.svg)
+# Promtail Client ![Continious Integration (Lint & Unit Test)](https://github.com/melaurent/promtail/workflows/Continious%20Integration%20(Lint%20&%20Unit%20Test)/badge.svg)
 
 A native Golang client for [Grafana's Loki logging server](https://grafana.com/oss/loki/) (written with love and tests).
 
@@ -23,7 +23,7 @@ The easiest way is to initialize a predefined JSON v1 API client via:
 ~~~go
 package mypackage
 
-import "github.com/ic2hrmk/promtail"
+import "github.com/melaurent/promtail"
 
 func foo() error {
     // List of default labels which would be attached to every log message

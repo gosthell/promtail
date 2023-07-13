@@ -1,3 +1,3 @@
-module github.com/ic2hrmk/promtail
+module github.com/melaurent/promtail
 
 go 1.14
