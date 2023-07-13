@@ -14,10 +14,9 @@ const (
 	exchangeQueueSize       = 1024
 )
 
-//
 // Creates a Promtail client with a custom Streams exchanger
-//	NOTE: options are applied before client start
 //
+//	NOTE: options are applied before client start
 func NewClient(exchanger StreamsExchanger, labels map[string]string, options ...clientOption) (Client, error) {
 	if exchanger == nil {
 		return nil, errors.New("exchanger is nil, no operations could be performed")
@@ -88,6 +87,15 @@ func WithBasicAuth(username, password string) clientOption {
 	}
 }
 
+func WithQueueSize(size int) clientOption {
+	return func(c *promtailClient) {
+		if size <= 0 {
+			return
+		}
+		c.queue = make(chan packedLogEntry, exchangeQueueSize)
+	}
+}
+
 type clientOption func(c *promtailClient)
 
 type packedLogEntry struct {
@@ -125,7 +133,8 @@ func (rcv *promtailClient) LogfWithLabels(level Level, labels map[string]string,
 		return
 	}
 
-	rcv.queue <- packedLogEntry{
+	select {
+	case rcv.queue <- packedLogEntry{
 		labels: copyLabels(labels),
 		level:  level,
 		logEntry: &LogEntry{
@@ -133,6 +142,9 @@ func (rcv *promtailClient) LogfWithLabels(level Level, labels map[string]string,
 			Format:    format,
 			Args:      args,
 		},
+	}:
+	default:
+		// drop log entry if queue is full
 	}
 }
 
